@@ -1,0 +1,55 @@
+version: '3.8'
+
+name: "ruspay"
+
+services:
+  frontend:
+    restart: on-failure
+    build:
+      context: ../../frontend
+      dockerfile: ../docker/dev-configs/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../frontend:/app/frontend
+
+  database:
+    image: postgis/postgis:13-master
+    restart: on-failure
+    platform: linux/amd64
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../../database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'directus'
+      POSTGRES_PASSWORD: 'directus'
+      POSTGRES_DB: 'directus'
+
+  cms:
+    image: directus/directus:10.7
+    restart: on-failure
+    ports:
+      - "8055:8055"
+    volumes:
+      - ../../directus/uploads:/directus/uploads
+      - ../../directus/extensions:/directus/extensions
+    depends_on:
+      - database
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      DB_CLIENT: 'postgres'
+      DB_HOST: 'database'
+      DB_PORT: '5432'
+      DB_DATABASE: 'directus'
+      DB_USER: 'directus'
+      DB_PASSWORD: 'directus'
+
+      WEBSOCKETS_ENABLED: 1
+
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
+
+      TELEMETRY: 0

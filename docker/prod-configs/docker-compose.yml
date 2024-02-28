@@ -1,0 +1,64 @@
+version: '3.8'
+
+name: "ruspay"
+
+services:
+  frontend:
+    restart: on-failure
+    build:
+      context: ../../frontend
+      dockerfile: ../docker/prod-configs/Dockerfile.frontend
+    depends_on:
+      - cms
+    ports:
+      - "3000:3000"
+
+  database:
+    restart: on-failure
+    image: postgis/postgis:13-master
+    platform: linux/amd64
+    volumes:
+      - ../../database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'directus'
+      POSTGRES_PASSWORD: 'directus'
+      POSTGRES_DB: 'directus'
+
+  cache:
+    image: redis:6
+    restart: on-failure
+
+  cms:
+    image: directus/directus:10.7
+    ports:
+      - "8055:8055"
+    restart: on-failure
+    volumes:
+      - ../../directus/uploads:/directus/uploads
+      - ../../directus/extensions:/directus/extensions
+    depends_on:
+      - cache
+      - database
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      DB_CLIENT: 'postgres'
+      DB_HOST: 'database'
+      DB_PORT: '5432'
+      DB_DATABASE: 'directus'
+      DB_USER: 'directus'
+      DB_PASSWORD: 'directus'
+
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      REDIS: 'redis://cache:6379'
+
+      WEBSOCKETS_ENABLED: 1
+
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
+
+      TELEMETRY: 0
+
+      PUBLIC_URL: 'https://directus.asaptickets.pro'
