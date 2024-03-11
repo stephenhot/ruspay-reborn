@@ -28,6 +28,21 @@ services:
     image: redis:6
     restart: on-failure
 
+  nginx:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+    networks:
+      - inner-network
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
+
   cms:
     image: directus/directus:10.7
     ports:
