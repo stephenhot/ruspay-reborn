@@ -132,7 +132,7 @@ export default function StepPayment() {
 
 					<div className={ "bg-muted p-3 rounded text-xs" }>
 						<p>
-							После перевода средств, нажмите кнопку "Оплачено, далее"
+							После перевода средств, нажмите кнопку &quot;Оплачено, далее&quot;
 						</p>
 					</div>
 
