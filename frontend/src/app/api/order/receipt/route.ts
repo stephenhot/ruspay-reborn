@@ -1,12 +1,6 @@
 import { createDirectus, rest, uploadFiles } from "@directus/sdk";
 import { NextRequest, NextResponse } from "next/server";
 
-export const config = {
-	api: {
-		bodyParser: false,
-	},
-};
-
 export async function POST(req: NextRequest) {
 	const orderReceipt = await req.formData();
 
