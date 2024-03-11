@@ -4,9 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
 	const order = await req.json();
 
-	console.log("RES: ", req);
-	console.log("ORDER: ", order);
-
 	try {
 		const client = createDirectus("http://cms:8055").with(rest());
 
