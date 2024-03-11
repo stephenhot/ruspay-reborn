@@ -59,9 +59,9 @@ services:
 
       WEBSOCKETS_ENABLED: 1
 
-      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_EMAIL: 'admin@mail.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
 
       TELEMETRY: 0
 
-      PUBLIC_URL: 'https://directus.asaptickets.pro'
+      PUBLIC_URL: 'https://admin.ruspay.online'
