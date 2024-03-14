@@ -53,7 +53,7 @@ export default function StepReceipt() {
 							       onChange={ (e) => {
 								       if (e.target.files) {
 									       setIsLoading(true);
-									       uploadOrderReceipt(e.target.files[0], setIsLoading).then(() => setIsLoading(false));
+									       uploadOrderReceipt(e.target.files[0]).then(() => setIsLoading(false));
 								       }
 							       } }/>
 						</form>

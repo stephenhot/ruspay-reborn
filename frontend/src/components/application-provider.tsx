@@ -22,7 +22,6 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 		sellers: [],
 		exchangeRate: 90,
 	});
-
 	const [applicationData, setApplicationData] = useState<ApplicationDataType>({
 		step: "init",
 		bank: undefined,
@@ -42,9 +41,16 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 		receiptId: undefined,
 	});
 
+	// API Fetches
 	useEffect(() => {
 		fetch("/api/banks")
-				.then((res) => res.json())
+				.then((res) => {
+					if (res.ok) {
+						return res.json();
+					}
+
+					throw new Error(res.statusText);
+				})
 				.then((banks) => {
 					fetch("/api/exchange-rate")
 							.then((res) => res.json())
@@ -53,6 +59,13 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 									...apiData,
 									banks,
 									exchangeRate: parseFloat(exchangeRate),
+								});
+							})
+							.catch(() => {
+								toast({
+									variant: "destructive",
+									title: "Ошибка при выполнении операции",
+									description: "Обновите страницу и попробуйте снова",
 								});
 							});
 				});
@@ -63,11 +76,24 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 				method: "POST",
 				body: JSON.stringify({ bank: applicationData.bank.id }),
 			})
-					.then((res) => res.json())
+					.then((res) => {
+						if (res.ok) {
+							return res.json();
+						}
+
+						throw new Error(res.statusText);
+					})
 					.then((res) => {
 						setApiData({
 							...apiData,
 							sellers: res,
+						});
+					})
+					.catch(() => {
+						toast({
+							variant: "destructive",
+							title: "Ошибка при выполнении операции",
+							description: "Обновите страницу и попробуйте снова",
 						});
 					});
 		}
@@ -78,16 +104,30 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 				method: "POST",
 				body: JSON.stringify({ seller: applicationData.seller.id }),
 			})
-					.then((res) => res.json())
+					.then((res) => {
+						if (res.ok) {
+							return res.json();
+						}
+
+						throw new Error(res.statusText);
+					})
 					.then((res) => {
 						setApplicationData({
 							...applicationData,
 							requisites: res,
 						});
+					})
+					.catch(() => {
+						toast({
+							variant: "destructive",
+							title: "Ошибка при выполнении операции",
+							description: "Обновите страницу и попробуйте снова",
+						});
 					});
 		}
 	}, [applicationData.seller]);
 
+	// Steps Logic
 	const chooseBank = (bank: BankType) => {
 		setApplicationData({
 			...applicationData,
@@ -135,7 +175,13 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 				quoteAmount: applicationData.quoteAssetAmount,
 			}),
 		})
-				.then((res) => res.json())
+				.then((res) => {
+					if (res.ok) {
+						return res.json();
+					}
+
+					throw new Error(res.statusText);
+				})
 				.then((res) => {
 					setApplicationData({
 						...applicationData,
@@ -143,7 +189,7 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 						orderId: res.id,
 					});
 				})
-				.catch((err) => {
+				.catch(() => {
 					toast({
 						variant: "destructive",
 						title: "Ошибка при выполнении операции",
@@ -153,23 +199,36 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 	};
 	const uploadOrderReceipt = async (receipt: any) => {
 		const orderReceipt = new FormData();
-		orderReceipt.append("folder", "381c8528-9b50-4ab9-9427-5c80f4e72ca5");
+		orderReceipt.append("folder", "cdb5337f-d7bc-41d2-b6ef-09fc5fa95455");
 		orderReceipt.append("title", v4());
 		orderReceipt.append("file", receipt);
 
 		return fetch("/api/order/receipt", {
 			method: "POST",
 			body: orderReceipt,
-		}).then((res) => res.json())
+		}).then((res) => {
+			if (res.ok) {
+				return res.json();
+			}
+
+			throw new Error(res.statusText);
+		})
 				.then((data) => {
 					setApplicationData({
 						...applicationData,
 						receiptId: data,
 					});
+
 					fetch("/api/order/assign-receipt", {
 						method: "POST",
 						body: JSON.stringify({ orderId: applicationData.orderId, receiptId: data }),
-					}).then(res => res.json())
+					}).then(res => {
+						if (res.ok) {
+							return res.json();
+						}
+
+						throw new Error(res.statusText);
+					})
 							.then(() => {
 								setApplicationData({
 									step: "init",
@@ -195,7 +254,7 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 									description: "Ожидайте проверки оператора, после этого Ваш баланс будет пополнен",
 								});
 							})
-							.catch((err) => {
+							.catch(() => {
 								toast({
 									variant: "destructive",
 									title: "Ошибка при выполнении операции",
@@ -203,7 +262,7 @@ export default function ApplicationProvider({ children }: { children: React.Reac
 								});
 							});
 				})
-				.catch((err) => {
+				.catch(() => {
 					toast({
 						variant: "destructive",
 						title: "Ошибка при выполнении операции",

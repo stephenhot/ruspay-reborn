@@ -1,4 +1,4 @@
-import { createDirectus, readItem, readItems, readSingleton, rest } from "@directus/sdk";
+import { createDirectus, readSingleton, rest } from "@directus/sdk";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -15,6 +15,8 @@ export async function GET() {
 	} catch (error) {
 		return NextResponse.json({
 			message: `Failed to fetch data from API: ${ JSON.stringify(error, null, 2) }`,
+		}, {
+			status: 400,
 		});
 	}
 }

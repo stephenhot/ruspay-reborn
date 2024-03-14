@@ -24,10 +24,6 @@ services:
       POSTGRES_PASSWORD: 'directus'
       POSTGRES_DB: 'directus'
 
-  cache:
-    image: redis:6
-    restart: on-failure
-
   nginx:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
@@ -46,11 +42,7 @@ services:
     ports:
       - "8055:8055"
     restart: on-failure
-    volumes:
-      - ../../directus/uploads:/directus/uploads
-      - ../../directus/extensions:/directus/extensions
     depends_on:
-      - cache
       - database
     environment:
       KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
@@ -66,10 +58,6 @@ services:
       DB_USER: 'directus'
       DB_PASSWORD: 'directus'
 
-      CACHE_ENABLED: 'true'
-      CACHE_STORE: 'redis'
-      REDIS: 'redis://cache:6379'
-
       WEBSOCKETS_ENABLED: 1
 
       ADMIN_EMAIL: 'admin@mail.com'
@@ -77,4 +65,4 @@ services:
 
       TELEMETRY: 0
 
-      PUBLIC_URL: 'https://admin.ruspay.online'
+      PUBLIC_URL: 'https://backend.ruspay.online'

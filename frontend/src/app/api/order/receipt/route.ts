@@ -13,7 +13,9 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json(id);
 	} catch (error) {
 		return NextResponse.json({
-			message: `Failed to create order: ${ JSON.stringify(error, null, 2) }`,
+			message: `Failed to upload receipt: ${ JSON.stringify(error, null, 2) }`,
+		}, {
+			status: 400
 		});
 	}
 }

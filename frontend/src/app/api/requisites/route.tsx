@@ -25,6 +25,8 @@ export async function POST(req: NextRequest) {
 		} catch (error) {
 			return NextResponse.json({
 				message: `Failed to fetch data from API: ${ JSON.stringify(error, null, 2) }`,
+			}, {
+				status: 400,
 			});
 		}
 	} else {
