@@ -34,8 +34,8 @@ services:
     environment:
       DB_SQLITE_FILE: "/data/database.sqlite"
     volumes:
-      - ./nginx/data:/data
-      - ./nginx/letsencrypt:/etc/letsencrypt
+      - ../../nginx/data:/data
+      - ../../nginx/letsencrypt:/etc/letsencrypt
 
   cms:
     image: directus/directus:10.7
